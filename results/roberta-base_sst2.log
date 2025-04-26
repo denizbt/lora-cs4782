@@ -1,0 +1,17 @@
+2025-04-26 06:30:07 - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-04-26 06:30:15 - INFO - starting LoRA on roberta-base on GLUE sst2
+2025-04-26 06:30:15 - INFO - running on cuda
+2025-04-26 06:30:59 - INFO - created dataloaders 
+2025-04-26 08:00:58 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-base-e0.pth
+2025-04-26 08:01:26 - INFO - 
+epoch 0
+training loss: 0.3627
+val loss: 0.2091
+2025-04-26 08:01:26 - INFO - val metrics: {'accuracy': 0.9231651376146789}
+
+2025-04-26 09:31:32 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-base-e1.pth
+2025-04-26 09:32:00 - INFO - 
+epoch 1
+training loss: 0.2742
+val loss: 0.2644
+2025-04-26 09:32:00 - INFO - val metrics: {'accuracy': 0.9025229357798165}

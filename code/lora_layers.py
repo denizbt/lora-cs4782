@@ -80,7 +80,25 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
                   
                   lora_key = LoRALayer(attn.key, rank=rank, alpha=alpha)
                   attn.key = lora_key
-    elif args.model_name == "deberta-base":
-      raise NotImplementedError()
+    elif args.model_name == "microsoft/deberta-v2-xxlarge":
+      # freeze all parameters
+      for param in model.deberta.parameters():
+          param.requires_grad = False
+      
+      for layer in model.deberta.encoder.layer:
+          if hasattr(layer, "attention"):
+              attn = layer.attention
+              
+              # Apply LoRA to query projection
+              if hasattr(attn, "self") and hasattr(attn.self, "query_proj"):
+                  if isinstance(attn.self.query_proj, nn.Linear):
+                      lora_query = LoRALayer(attn.self.query_proj, rank=rank, alpha=alpha)
+                      attn.self.query_proj = lora_query
+              
+              # Apply LoRA to key projection
+              if hasattr(attn, "self") and hasattr(attn.self, "key_proj"):
+                  if isinstance(attn.self.key_proj, nn.Linear):
+                      lora_key = LoRALayer(attn.self.key_proj, rank=rank, alpha=alpha)
+                      attn.self.key_proj = lora_key
     else:
       raise RuntimeError("Model type is not supported by this implementation of LoRA.")
