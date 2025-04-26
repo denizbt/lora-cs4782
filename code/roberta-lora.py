@@ -18,7 +18,6 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="roberta-base")
     parser.add_argument("--resume-training", type=str, default="None")
-    # parser.add_argument("--run-inference", type=str, default="")
     
     return parser.parse_args()
 
@@ -101,9 +100,11 @@ def train_roberta(args, task_name, model):
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+    logging.info(f"running on {device}")
 
     # create dataloaders for given GLUE task
     train_loader, val_loader = create_roberta_dataloaders(args, task_name)
+    logging.info(f"created dataloaders for {task_name}")
 
     # based on Appendix D, use AdamW
     lora_params = [p for n, p in model.named_parameters() if p.requires_grad]
@@ -122,7 +123,6 @@ def train_roberta(args, task_name, model):
     )
 
     num_epochs = GLUE_NUM_EPOCHS[task_name]
-    
     for e in tqdm(range(num_epochs), leave=True):
       model.train()
       train_running_loss = 0

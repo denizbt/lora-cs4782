@@ -42,15 +42,20 @@ class LoRALayer(nn.Module):
 
   def forward(self, x):
     # modified forward pass, eqn (3) from paper
-    print("forward lora x", x.size())
     # h = W_ox + BAx
     Wo_out = self.wo_layer(x)
-    # TODO check the dimensions of lora pass, not sure about batch sizes
-    lora_out = self.B @ (self.A @ x)
+
+    # x.size() --> [batch_size, seq_length, embedding_dim]
+    batch_size, seq_length, embed_dim = x.shape
+    x_flatten = x.view(-1, embed_dim)  # [batch_size*seq_length, embedding_dim]
+    
+    # multiply by LORA matrices
+    lora_out = x_flatten @ (self.B @ self.A)  # [batch*seq, embed_dim] @ ([embed_dim, r] @ [r, output_dim])
+    
+    # recover batch dimension
+    lora_out = lora_out.view(batch_size, seq_length, -1)
+
     return Wo_out + self.scale_factor * lora_out
-  
-    # lora_out = (self.B @ self.A) @ x.transpose(0, 1)  # shape: (out, batch)
-    # lora_out = lora_out.transpose(0, 1)
 
 def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
     """
