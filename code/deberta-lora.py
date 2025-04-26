@@ -19,6 +19,7 @@ def get_args():
     parser.add_argument("--task-name", type=str, default="sst2")
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
     parser.add_argument("--save-dir", type=str, default="../results")
+    parser.add_argument("--num-epochs", type=int, default=0, help="Pass in a value which represents the number of epochs already ran for this model.")
 
     return parser.parse_args()
 
@@ -139,6 +140,10 @@ def train_deberta(args, model):
     )
 
     num_epochs = GLUE_NUM_EPOCHS[task_name]
+    if args.num_epochs != 0:
+      # pass in num_epochs if you are restarting training after having done args.num_epochs already
+      num_epochs -= args.num_epochs
+    
     for e in tqdm(range(num_epochs), leave=True):
         model.train()
         train_running_loss = 0
