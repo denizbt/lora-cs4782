@@ -1,43 +1,81 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from transformers import AutoModel, AutoTokenizer
 
 class LoRALayer(nn.Module):
-  def __init__(self, model_name, d_in, k_out, rank, alpha) -> None:
+  def __init__(self, wo_layer: nn.Linear, rank: int, alpha: int) -> None:
     """
     LoRA layer, performs low-rank adaptation of given HuggingFace model
     
     Args:
-      model_name (str): name of model to load from AutoModel
-      d_in (int): first dimension of pre-trained weight matrix Wo
-      k_out (int): second dimension of pre-trained weight matrix Wo
+      wo_layer (nn.Linear): the original attention key or query layer to apply low rank adaptation to.
       rank (int): the low-rank value to use for decomposition
-      alpha (int): constant, part of scaling factor for Wo
+      alpha (int): constant, part of scaling factor for BA
     """
     super().__init__()
     
-    # pre-trained model
-    self.model = AutoModel.from_pretrained(model_name)
+    self.wo_layer = wo_layer
+    # freeze weights and bias for this layer
+    # LoRA only trains low-rank matrices A, B
+    self.wo_layer.weight.requires_grad = False
     
-    # pre-trained weight matrix (using Wq only for now)
-    # TODO check if this structure is same for all pre-trained models we are going to use this on
-    last_attention = self.model.encoder.layer[len(self.model.encoder.layer) - 1].attention.self
-    self.Wq = last_attention.query.weight.detach().numpy()
+    # section 4.2: paper only adapts attention weights (not biases)
+    if hasattr(self.wo_layer, "bias"):
+      self.wo_layer.bias.requires_grad = False
 
     # the low-rank value for weight matrix decomposition
     self.r = rank
     
-    # alpha, part of scaling factor alpha/r
+    # constant, part of scaling factor
     self.alpha = alpha
     
+    # used to scale (BAx) 
     self.scale_factor = self.alpha / self.r
+    
+    # d_in: first dimension of pre-trained weight matrix
+    # k_out: second dimension of pre-trained weight matrix Wo
+    d_in = self.wo_layer.in_features
+    k_out = self.wo_layer.out_features
 
     # low-rank matrices
-    self.B = nn.Parameter(torch.zeros((d_in, self.r))) # init to zero
-    self.A = nn.Parameter(torch.normal(0, 1, size=(self.r, k_out))) # init from random Gaussian
+    self.B = nn.Parameter(torch.zeros((d_in, self.r)), requires_grad=True) # initialize to zero
+    self.A = nn.Parameter(torch.normal(0, 1, size=(self.r, k_out)), requires_grad=True) # initialize from random Gaussian
 
   def forward(self, x):
-    # TODO check the dimensions of x to make sure it works out
-    h = self.Wq @ x + self.scale_factor * ((self.B @ self.A) @ x)
-    return h
+    # modified forward pass, eqn (3) from paper
+    print("forward lora x", x.size())
+    # h = W_ox + BAx
+    Wo_out = self.wo_layer(x)
+    # TODO check the dimensions of lora pass, not sure about batch sizes
+    lora_out = self.B @ (self.A @ x)
+    return Wo_out + self.scale_factor * lora_out
+  
+    # lora_out = (self.B @ self.A) @ x.transpose(0, 1)  # shape: (out, batch)
+    # lora_out = lora_out.transpose(0, 1)
+
+def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
+    """
+    Given a model, replaces key and query attention layers with a custom LoRA layer (defined in lora_layers.py)
+    and freezes all parameters except for LoRA matrices i.e. injects LoRA
+
+    Args:
+      args (Namespace): command line-arguments to this script
+      model (nn.Module): the model to inject LoRA matrices to
+    """
+    if args.model_name == "roberta-base":
+      # freeze all parameters
+      for param in model.roberta.parameters():
+          param.requires_grad = False
+
+      for layer in model.roberta.encoder.layer:
+          attn = layer.attention.self
+          if hasattr(attn, "query") and hasattr(attn, "key"):
+              if isinstance(attn.query, nn.Linear) and isinstance(attn.key, nn.Linear):
+                  lora_query = LoRALayer(attn.query, rank=rank, alpha=alpha)
+                  attn.query = lora_query
+                  
+                  lora_key = LoRALayer(attn.key, rank=rank, alpha=alpha)
+                  attn.key = lora_key
+    elif args.model_name == "deberta-base":
+      raise NotImplementedError()
+    else:
+      raise RuntimeError("Model type is not supported by this implementation of LoRA.")
