@@ -19,7 +19,7 @@ class LoRALayer(nn.Module):
     self.wo_layer.weight.requires_grad = False
     
     # section 4.2: paper only adapts attention weights (not biases)
-    if hasattr(self.wo_layer, "bias"):
+    if hasattr(self.wo_layer, "bias") and self.wo_layer.bias is not None:
       self.wo_layer.bias.requires_grad = False
 
     # the low-rank value for weight matrix decomposition
@@ -28,7 +28,7 @@ class LoRALayer(nn.Module):
     # constant, part of scaling factor
     self.alpha = alpha
     
-    # used to scale (BAx) 
+    # used to scale BAx 
     self.scale_factor = self.alpha / self.r
     
     # d_in: first dimension of pre-trained weight matrix
@@ -46,14 +46,8 @@ class LoRALayer(nn.Module):
     Wo_out = self.wo_layer(x)
 
     # x.size() --> [batch_size, seq_length, embedding_dim]
-    batch_size, seq_length, embed_dim = x.shape
-    x_flatten = x.view(-1, embed_dim)  # [batch_size*seq_length, embedding_dim]
-    
-    # multiply by LORA matrices
-    lora_out = x_flatten @ (self.B @ self.A)  # [batch*seq, embed_dim] @ ([embed_dim, r] @ [r, output_dim])
-    
-    # recover batch dimension
-    lora_out = lora_out.view(batch_size, seq_length, -1)
+    # LoRA out: BAx multiplied by scale factor alpha/r
+    lora_out = self.scale_factor * (x @ self.B @ self.A)
 
     return Wo_out + self.scale_factor * lora_out
 
@@ -66,11 +60,12 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
       args (Namespace): command line-arguments to this script
       model (nn.Module): the model to inject LoRA matrices to
     """
-    if args.model_name == "roberta-base":
-      # freeze all parameters
-      for param in model.roberta.parameters():
-          param.requires_grad = False
+    # freeze all parameters (including encoder and MLP)!!
+    # this goes for every model, following paper which only fine-tunes the attention weights
+    for param in model.parameters():
+        param.requires_grad = False
 
+    if args.model_name == "roberta-base":
       for layer in model.roberta.encoder.layer:
           attn = layer.attention.self
           if hasattr(attn, "query") and hasattr(attn, "key"):
@@ -81,10 +76,6 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
                   lora_key = LoRALayer(attn.key, rank=rank, alpha=alpha)
                   attn.key = lora_key
     elif args.model_name == "microsoft/deberta-v2-xxlarge":
-      # freeze all parameters
-      for param in model.deberta.parameters():
-          param.requires_grad = False
-      
       for layer in model.deberta.encoder.layer:
           if hasattr(layer, "attention"):
               attn = layer.attention

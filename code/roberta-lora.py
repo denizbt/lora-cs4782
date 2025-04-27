@@ -1,6 +1,3 @@
-# NOTE this is for running in Colab with nicer tqdm bars
-# from tqdm.notebook import tqdm
-#######################################
 from transformers import RobertaForSequenceClassification, RobertaTokenizer
 from transformers import get_linear_schedule_with_warmup
 
@@ -21,8 +18,9 @@ def get_args():
     parser.add_argument("--model-name", type=str, default="roberta-base")
     parser.add_argument("--task-name", type=str, default="sst2")
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
+    parser.add_argument("--resume-optimizer", type=str, default="None", help="If not 'None', contains path to optimizer state from which to resume training.")
     parser.add_argument("--save-dir", type=str, default="../results")
-    parser.add_argument("--num-epochs", type=int, default=0, help="Pass in a value which represents the number of epochs already ran for this model.")
+    #parser.add_argument("--num-epochs", type=int, default=0, help="Pass in a value which represents the number of epochs already ran for this model.")
 
     return parser.parse_args()
 
@@ -124,7 +122,7 @@ def train_roberta(args, model):
     # based on Appendix D, use AdamW
     lora_params = [p for n, p in model.named_parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(lora_params, lr=GLUE_TASK_LR[task_name], weight_decay=0.01)
-    
+
     # use a warmup ratio 0.06 (Appendix D, Table 9)
     num_train_steps = len(train_loader) * GLUE_NUM_EPOCHS[task_name]
     warmup_steps = int(num_train_steps * 0.06) 
@@ -136,12 +134,17 @@ def train_roberta(args, model):
         num_training_steps=num_train_steps
     )
 
-    num_epochs = GLUE_NUM_EPOCHS[task_name]
-    if args.num_epochs != 0:
-      # pass in num_epochs if you are restarting training after having done args.num_epochs already
-      num_epochs -= args.num_epochs
+    # potentially reload optimizer and scheduler state
+    start_epoch = 0
+    if args.resume_training != "None" and args.resume_optimizer != "None":
+        logging.info(f"Loading optimizer state from {args.resume_optimizer}")
+        checkpoint = torch.load(args.resume_optimizer, map_location=device)
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        scheduler.load_state_dict(checkpoint['scheduler'])
+        start_epoch = checkpoint['epoch'] + 1
     
-    for e in tqdm(range(num_epochs), leave=True):
+    remaining_epochs = GLUE_NUM_EPOCHS[task_name] - start_epoch
+    for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
       model.train()
       train_running_loss = 0
       for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):
@@ -160,6 +163,14 @@ def train_roberta(args, model):
       # save model after every epoch
       torch.save(model.state_dict(), f"{args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
       logging.info(f"Model saved to {args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
+
+      # save optimizer and scheduler state
+      optimizer_save_path = f"{args.save_dir}/{args.model_name}-e{e}-{task_name}_optimizer.pth"
+      torch.save({
+          'epoch': e,
+          'optimizer': optimizer.state_dict(),
+          'scheduler': scheduler.state_dict(),
+      }, optimizer_save_path)
       
       avg_train_loss = train_running_loss / len(train_loader)
       if task_name == "mnli":
@@ -254,14 +265,17 @@ def main(args):
     # add low-rank weight matrices and freeze everything else
     inject_lora_to_kq_attn(args, model, rank=8, alpha=8)
     if args.resume_training != "None":
-      # NOTE if model saved from CUDA device, can't reload 
       device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
       logging.info(f"resuming training from {args.resume_training}")
       model.load_state_dict(torch.load(args.resume_training, map_location=device))
-    
-   
-  
+
     logging.info(f"starting LoRA on {args.model_name} on GLUE {args.task_name}")
+    # NOTE sanity check to ensure LoRA is only training small subset of parameters
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    total_params = sum(p.numel() for p in model.parameters())
+    logging.info(f"Number of trainable parameters: {trainable_params}")
+    logging.info(f"Percentage of trainable parameters: {100 * trainable_params / total_params:.4f}%")
+    
     train_roberta(args, model)
 
 if __name__ == "__main__":

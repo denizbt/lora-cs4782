@@ -18,8 +18,8 @@ def get_args():
     parser.add_argument("--model-name", type=str, default="microsoft/deberta-v2-xxlarge")
     parser.add_argument("--task-name", type=str, default="sst2")
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
+    parser.add_argument("--resume-optimizer", type=str, default="None", help="If not 'None', contains path to optimizer state from which to resume training.")
     parser.add_argument("--save-dir", type=str, default="../results")
-    parser.add_argument("--num-epochs", type=int, default=0, help="Pass in a value which represents the number of epochs already ran for this model.")
 
     return parser.parse_args()
 
@@ -139,12 +139,17 @@ def train_deberta(args, model):
         num_training_steps=num_train_steps
     )
 
-    num_epochs = GLUE_NUM_EPOCHS[task_name]
-    if args.num_epochs != 0:
-      # pass in num_epochs if you are restarting training after having done args.num_epochs already
-      num_epochs -= args.num_epochs
+    # potentially reload optimizer and scheduler state
+    start_epoch = 0
+    if args.resume_training != "None" and args.resume_optimizer != "None":
+        logging.info(f"Loading optimizer state from {args.resume_optimizer}")
+        checkpoint = torch.load(args.resume_optimizer, map_location=device)
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        scheduler.load_state_dict(checkpoint['scheduler'])
+        start_epoch = checkpoint['epoch'] + 1
     
-    for e in tqdm(range(num_epochs), leave=True):
+    remaining_epochs = GLUE_NUM_EPOCHS[task_name] - start_epoch
+    for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
         model.train()
         train_running_loss = 0
         for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):
@@ -256,12 +261,17 @@ def main(args):
     # add low-rank weight matrices and freeze everything else
     inject_lora_to_kq_attn(args, model, rank=8, alpha=8)
     if args.resume_training != "None":
-       # NOTE if model saved from CUDA device, can't reload 
        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
        logging.info(f"resuming training from {args.resume_training}")
        model.load_state_dict(torch.load(args.resume_training, map_location=device))
     
     logging.info(f"starting LoRA on {args.model_name} on GLUE {args.task_name}")
+    # NOTE sanity check to ensure LoRA is only training small subset of parameters
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    total_params = sum(p.numel() for p in model.parameters())
+    logging.info(f"Number of trainable parameters: {trainable_params}")
+    logging.info(f"Percentage of trainable parameters: {100 * trainable_params / total_params:.4f}%")
+
     train_deberta(args, model)
 
 if __name__ == "__main__":
