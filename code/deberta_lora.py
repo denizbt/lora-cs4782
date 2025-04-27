@@ -12,6 +12,7 @@ import logging
 
 # importing custom LORA functions
 from lora_layers import inject_lora_to_kq_attn
+from roberta_lora import val
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -194,37 +195,10 @@ def train_deberta(args, model):
             logging.info(f"val loss: {avg_val_loss:.4f}")
             logging.info(f"overall accuracy: {overall_accuracy:.4f}")
         else:
-            metrics, avg_val_loss = val_deberta(model, val_loader, task_name, device)
+            metrics, avg_val_loss = val(model, val_loader, task_name, device)
             print(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
             logging.info(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
             logging.info(f"val metrics: {metrics}\n")
-
-def val_deberta(model, val_loader, task_name, device):
-    model.eval()
-    val_running_loss = 0
-    val_preds = []
-    all_labels = []
-    
-    with torch.no_grad():
-        for batch in tqdm(val_loader, desc=f"val batches", position=1, leave=False):
-            batch = {k: v.to(device) for k, v in batch.items()}
-            outputs = model(**batch)
-            
-            logits = outputs.logits
-            if task_name in GLUE_BINARY_TASKS or task_name == "mnli":
-                preds = torch.argmax(logits, dim=-1)
-            else:
-                raise RuntimeError(f"{task_name} not supported in validation loop.")
-            
-            loss = outputs.loss
-            val_running_loss += loss.item()
-            
-            val_preds.extend(preds.cpu().numpy())
-            all_labels.extend(batch['labels'].cpu().numpy())
-    
-    metrics = compute_metrics(all_labels, val_preds, task_name)
-    avg_val_loss = val_running_loss / len(val_loader)
-    return metrics, avg_val_loss
 
 def compute_metrics(y_true, y_pred, task_name):
     # use accuracy for most tasks

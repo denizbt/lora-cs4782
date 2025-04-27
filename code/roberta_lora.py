@@ -6,7 +6,8 @@ import torch
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, matthews_corrcoef
 from scipy.stats import pearsonr
-from tqdm import tqdm
+import sys
+# from tqdm import tqdm
 import argparse
 import logging
 
@@ -144,10 +145,10 @@ def train_roberta(args, model):
         start_epoch = checkpoint['epoch'] + 1
     
     remaining_epochs = GLUE_NUM_EPOCHS[task_name] - start_epoch
-    for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
+    for e in range(start_epoch, remaining_epochs):
       model.train()
       train_running_loss = 0
-      for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):
+      for i, batch in enumerate(train_loader):
         optimizer.zero_grad()
 
         batch = {k: v.to(device) for k, v in batch.items()}
@@ -159,13 +160,16 @@ def train_roberta(args, model):
         scheduler.step()
 
         train_running_loss += loss.item()
+        if i % 50 == 0:
+          print(f"Epoch {e+1}, Batch {i+1}/{len(train_loader)}, Loss: {loss.item():.4f}")
+          sys.stdout.flush() # force Colab to show print statements
       
       # save model after every epoch
-      torch.save(model.state_dict(), f"{args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
-      logging.info(f"Model saved to {args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
+      torch.save(model.state_dict(), f"{args.save_dir}/{args.model_name}-e{e+1}-{task_name}.pth")
+      logging.info(f"Model saved to {args.save_dir}/{args.model_name}-e{e+1}-{task_name}.pth")
 
       # save optimizer and scheduler state
-      optimizer_save_path = f"{args.save_dir}/{args.model_name}-e{e}-{task_name}_optimizer.pth"
+      optimizer_save_path = f"{args.save_dir}/{args.model_name}-e{e+1}-{task_name}_optimizer.pth"
       torch.save({
           'epoch': e,
           'optimizer': optimizer.state_dict(),
@@ -181,8 +185,8 @@ def train_roberta(args, model):
         logging.info(f"epoch {e}")
         logging.info(f"training loss: {avg_train_loss:.4f}")
         
-        metrics_matched, avg_val_loss_matched = val_roberta(model, val_loader["matched"], task_name, device)
-        metrics_mismatched, avg_val_loss_mismatched = val_roberta(model, val_loader["mismatched"], task_name, device)
+        metrics_matched, avg_val_loss_matched = val(model, val_loader["matched"], task_name, device)
+        metrics_mismatched, avg_val_loss_mismatched = val(model, val_loader["mismatched"], task_name, device)
         
         matched_size = len(val_loader["matched"].dataset)
         mismatched_size = len(val_loader["mismatched"].dataset)
@@ -198,35 +202,49 @@ def train_roberta(args, model):
         logging.info(f"val loss: {avg_val_loss:.4f}")
         logging.info(f"overall accuracy: {overall_accuracy:.4f}")
       else:
-        metrics, avg_val_loss = val_roberta(model, val_loader, task_name, device)
+        metrics, avg_val_loss = val(model, val_loader, task_name, device)
         print(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
         logging.info(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
         logging.info(f"val metrics: {metrics}\n")
+      
+      # force print statements to show up in colab
+      sys.stdout.flush()
 
-def val_roberta(model, val_loader, task_name, device):
+def val(model, val_loader, task_name, device):
     model.eval()
     val_running_loss = 0
-    val_preds = []
+    all_preds = []
     all_labels = []
     
     with torch.no_grad():
-        for batch in tqdm(val_loader, desc=f"val batches", position=1, leave=False):
-          batch = {k: v.to(device) for k, v in batch.items()}
-          outputs = model(**batch)
-          
-          logits = outputs.logits
-          if task_name in GLUE_BINARY_TASKS or task_name == "mnli":
-            preds = torch.argmax(logits, dim=-1)
-          else:
-             raise RuntimeError(f"{task_name} not supported in validation loop.")
-          
-          loss = outputs.loss
-          val_running_loss += loss.item()
-          
-          val_preds.extend(preds.cpu().numpy())
-          all_labels.extend(batch['labels'].cpu().numpy())
+        for i, batch in enumerate(val_loader):
+            batch = {k: v.to(device) for k, v in batch.items()}
+            outputs = model(**batch)
+            
+            logits = outputs.logits
+            if task_name in GLUE_BINARY_TASKS or task_name == "mnli":
+                preds = torch.argmax(logits, dim=-1)
+            else:
+                raise RuntimeError(f"{task_name} not supported in validation loop.")
+            
+            # Keep everything on GPU until the end
+            all_preds.append(preds)
+            all_labels.append(batch['labels'])
+            
+            loss = outputs.loss
+            val_running_loss += loss.item()
+
+            # print progress every 50 steps
+            if i % 50 == 0:
+              print(f"Validation batch {i}/{len(val_loader)}")
+              sys.stdout.flush()
     
-    metrics = compute_metrics(all_labels, val_preds, task_name)
+    # concatenate results at the end
+    all_preds = torch.cat(all_preds)
+    all_labels = torch.cat(all_labels)
+    
+    # move to CPU to compute_metrics
+    metrics = compute_metrics(all_labels.cpu().numpy(), all_preds.cpu().numpy(), task_name)
     avg_val_loss = val_running_loss / len(val_loader)
     return metrics, avg_val_loss
 
@@ -252,7 +270,8 @@ def main(args):
       level=logging.INFO,
       filemode='a', # append
       format='%(asctime)s - %(levelname)s - %(message)s',
-      datefmt='%Y-%m-%d %H:%M:%S'
+      datefmt='%Y-%m-%d %H:%M:%S',
+      force=True
     )
     
     if args.task_name in GLUE_BINARY_TASKS:
