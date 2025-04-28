@@ -33,7 +33,7 @@ GLUE_TASK_BATCH = {
     "rte": 4
 }
 
-GLUE_TASK_LR = {"mnli": 1e-4, "stsb": 2e-4, "sst2": 6e-4, "mrpc": 2e-4, "cola": 1e-4, "qnli": 1e-4, "qqp": 1e-4, "rte": 2e-4}
+GLUE_TASK_LR = {"mnli": 1e-4, "stsb": 2e-4, "sst2": 6e-5, "mrpc": 2e-4, "cola": 1e-4, "qnli": 1e-4, "qqp": 1e-4, "rte": 2e-4}
 
 # Same keys for tokenization
 GLUE_TASK_TOKENIZE = {
@@ -49,7 +49,7 @@ GLUE_TASK_TOKENIZE = {
 GLUE_SEQ_LEN = {"mnli": 256, "stsb": 128, "sst2": 128, "mrpc": 128, "cola": 64, "qnli": 512, "qqp": 320, "rte": 320}
 
 # from Appendix D, Table 10
-GLUE_NUM_EPOCHS = {"mnli": 5, "stsb": 10, "sst2": 16, "mrpc": 30, "cola": 10, "qnli": 8, "qqp": 11, "rte": 11}
+GLUE_NUM_EPOCHS = {"mnli": 5, "stsb": 10, "sst2": 16, "mrpc": 30, "cola": 10, "qnli": 8, "qqp": 11, "rte": 11} 
 
 GLUE_BINARY_TASKS = ["sst2", "mrpc", "cola", "qnli", "qqp", "rte"]
 

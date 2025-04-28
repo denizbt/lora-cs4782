@@ -12,11 +12,12 @@ import argparse
 import logging
 
 from train_val_berta import val, GLUE_BINARY_TASKS
+from lora_layers import inject_lora_to_kq_attn
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="roberta-base")
-    # parser.add_argument("--lora", type=bool, default=True)
+    parser.add_argument("--lora", type=bool, default=None, help="Add --lora=True if you want the model to injected with LoRA.")
     parser.add_argument("--task-name", type=str, default="rte")
 
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
@@ -29,7 +30,13 @@ NUM_EPOCHS = 10
 
 BATCH_SIZE = 32
 
+LEARNING_RATE = 1e-4
+
 MAX_SEQ_LENGTH = 512
+
+# most common config in LoRA paper experiments
+RANK = 8
+ALPHA = 8
 
 GLUE_TASK_TOKENIZE = {
     "sst2": ("sentence", None),
@@ -42,7 +49,7 @@ GLUE_TASK_TOKENIZE = {
 }
 
 def create_dataloaders(args, task_name):
-  if args.model_name == "roberta_base":
+  if args.model_name == "roberta-base":
     tokenizer = RobertaTokenizer.from_pretrained(args.model_name)
   else:
     tokenizer = DebertaV2Tokenizer.from_pretrained(args.model_name)
@@ -101,10 +108,11 @@ def train(args, model):
     task_name = args.task_name
     # create dataloaders for given GLUE task
     train_loader, val_loader = create_dataloaders(args, task_name)
-    logging.info(f"created dataloaders")
+    logging.info(f"Created dataloaders")
 
-    # based on Appendix D, use AdamW
-    optimizer = torch.optim.AdamW(model.params(), weight_decay=0.01)
+    # similar to LoRA paper, use AdamW and Linear LR scheduler (without warmup ratio however)
+    optimizer = torch.optim.AdamW(model.parameters(), weight_decay=0.01, lr=LEARNING_RATE)
+    scheduler = torch.optim.lr_scheduler.LinearLR(optimizer)
 
     # potentially reload optimizer and scheduler state
     start_epoch = 0
@@ -127,6 +135,7 @@ def train(args, model):
         loss = outputs.loss
         loss.backward()
         optimizer.step()
+        scheduler.step()
 
         train_running_loss += loss.item()
       
@@ -157,10 +166,16 @@ def main(args):
       datefmt='%Y-%m-%d %H:%M:%S'
     )
     
+      # log all the hyperparameters use in this run
+    logging.info(f"Starting {args.model_name} on {args.task_name}, {lora}")
+    logging.info(f"Config: num_epochs: {NUM_EPOCHS}, learning rate: {LEARNING_RATE}, batch size {BATCH_SIZE}, max_seq_len {MAX_SEQ_LENGTH}")
+
     # run this baseline model on a binary task
     model = AutoModelForSequenceClassification.from_pretrained(args.model_name, num_labels=2)
-    
-    logging.info(f"starting {args.model_name} on {args.task_name}")
+    if args.lora:
+      inject_lora_to_kq_attn(args, model, RANK, ALPHA)
+      logging.info(f"Applying LoRA with r={RANK}, alpha={ALPHA}")
+
     # NOTE sanity check to ensure LoRA is only training small subset of parameters
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     total_params = sum(p.numel() for p in model.parameters())
