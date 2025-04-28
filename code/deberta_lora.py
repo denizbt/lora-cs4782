@@ -4,7 +4,7 @@ from transformers import get_linear_schedule_with_warmup
 from datasets import load_dataset
 import torch
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+# from tqdm import tqdm
 import argparse
 import logging
 

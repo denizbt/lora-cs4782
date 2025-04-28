@@ -19,6 +19,9 @@ def get_args():
     parser.add_argument("--model-name", type=str, default="roberta-base")
     parser.add_argument("--lora", type=bool, default=None, help="Add --lora=True if you want the model to injected with LoRA.")
     parser.add_argument("--task-name", type=str, default="rte")
+    parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--num-epochs", type=int, default=10)
+    parser.add_argument("--max-seq-len", type=int, default=512)
 
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
     parser.add_argument("--resume-optimizer", type=str, default="None", help="If not 'None', contains path to optimizer state from which to resume training.")
@@ -26,13 +29,7 @@ def get_args():
 
     return parser.parse_args()
 
-NUM_EPOCHS = 10
-
-BATCH_SIZE = 32
-
 LEARNING_RATE = 1e-4
-
-MAX_SEQ_LENGTH = 512
 
 # most common config in LoRA paper experiments
 RANK = 8
@@ -63,7 +60,7 @@ def create_dataloaders(args, task_name):
             example[k1],
             padding="max_length",
             truncation=True,
-            max_length=MAX_SEQ_LENGTH
+            max_length=args.max_seq_len
         )
     else:
         return tokenizer(
@@ -71,7 +68,7 @@ def create_dataloaders(args, task_name):
             example[k2],
             padding="max_length",
             truncation=True,
-            max_length=MAX_SEQ_LENGTH
+            max_length=args.max_seq_len
         )
 
   tokenized_dataset = dataset.map(tokenize_function, batched=True)
@@ -91,8 +88,8 @@ def create_dataloaders(args, task_name):
   tokenized_dataset.set_format(type='torch', columns=dataset_columns)
 
   # batch sizes set for Roberta-base classification (Appendix D, Table 9)
-  train_loader = DataLoader(tokenized_dataset["train"], batch_size=BATCH_SIZE, shuffle=True)  
-  val_loader = DataLoader(tokenized_dataset["validation"], batch_size=BATCH_SIZE)
+  train_loader = DataLoader(tokenized_dataset["train"], batch_size=args.batch_size, shuffle=True)  
+  val_loader = DataLoader(tokenized_dataset["validation"], batch_size=args.batch_size)
 
   return train_loader, val_loader
 
@@ -104,8 +101,13 @@ def train(args, model):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     logging.info(f"running on {device}")
+    if '/' in args.model_name:
+      save_model_name = args.model_name.split('/')[-1]
+    else:
+      save_model_name = args.model_name
 
     task_name = args.task_name
+    lora = "lora" if args.lora else "full"
     # create dataloaders for given GLUE task
     train_loader, val_loader = create_dataloaders(args, task_name)
     logging.info(f"Created dataloaders")
@@ -122,7 +124,7 @@ def train(args, model):
         optimizer.load_state_dict(checkpoint['optimizer'])
         start_epoch = checkpoint['epoch'] + 1
     
-    remaining_epochs = NUM_EPOCHS - start_epoch
+    remaining_epochs = args.num_epochs - start_epoch
     for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
       model.train()
       train_running_loss = 0
@@ -140,11 +142,11 @@ def train(args, model):
         train_running_loss += loss.item()
       
       # save model after every epoch
-      torch.save(model.state_dict(), f"{args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
-      logging.info(f"Model saved to {args.save_dir}/{args.model_name}-e{e}-{task_name}.pth")
+      torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
+      logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
 
       # save optimizer and scheduler state
-      optimizer_save_path = f"{args.save_dir}/{args.model_name}-e{e}-{task_name}_optimizer.pth"
+      optimizer_save_path = f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}_optimizer.pth"
       torch.save({
           'epoch': e,
           'optimizer': optimizer.state_dict(),
@@ -158,8 +160,13 @@ def train(args, model):
 
 def main(args):
     lora = "lora" if args.lora else "full"
+    if '/' in args.model_name:
+      save_model_name = args.model_name.split('/')[-1]
+    else:
+      save_model_name = args.model_name
+
     logging.basicConfig(
-      filename=f'{args.save_dir}/{lora}_{args.model_name}_{args.task_name}.log',
+      filename=f'{args.save_dir}/{lora}_{save_model_name}_{args.task_name}.log',
       level=logging.INFO,
       filemode='a', # append
       format='%(asctime)s - %(levelname)s - %(message)s',
@@ -168,7 +175,7 @@ def main(args):
     
       # log all the hyperparameters use in this run
     logging.info(f"Starting {args.model_name} on {args.task_name}, {lora}")
-    logging.info(f"Config: num_epochs: {NUM_EPOCHS}, learning rate: {LEARNING_RATE}, batch size {BATCH_SIZE}, max_seq_len {MAX_SEQ_LENGTH}")
+    logging.info(f"Config: num_epochs: {args.num_epochs}, learning rate: {LEARNING_RATE}, batch size {args.num_epochs}, max_seq_len {args.max_seq_len}")
 
     # run this baseline model on a binary task
     model = AutoModelForSequenceClassification.from_pretrained(args.model_name, num_labels=2)

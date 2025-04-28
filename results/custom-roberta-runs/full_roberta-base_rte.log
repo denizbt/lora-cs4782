@@ -1,0 +1,76 @@
+2025-04-28 18:21:56 - INFO - Starting roberta-base on rte, full
+2025-04-28 18:21:56 - INFO - Config: num_epochs: 10, learning rate: 0.0001, batch size 32, max_seq_len 512
+2025-04-28 18:22:00 - INFO - Number of trainable parameters: 124647170
+2025-04-28 18:22:00 - INFO - Percentage of trainable parameters: 100.0000%
+2025-04-28 18:22:01 - INFO - running on cuda
+2025-04-28 18:22:13 - INFO - Created dataloaders
+2025-04-28 18:22:59 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e0-rte.pth
+2025-04-28 18:23:03 - INFO - 
+epoch 0
+training loss: 0.6972
+val loss: 0.7057
+2025-04-28 18:23:03 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 18:23:49 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e1-rte.pth
+2025-04-28 18:23:53 - INFO - 
+epoch 1
+training loss: 0.6960
+val loss: 0.6922
+2025-04-28 18:23:53 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 18:24:39 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e2-rte.pth
+2025-04-28 18:24:42 - INFO - 
+epoch 2
+training loss: 0.6959
+val loss: 0.6964
+2025-04-28 18:24:42 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 18:25:28 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e3-rte.pth
+2025-04-28 18:25:32 - INFO - 
+epoch 3
+training loss: 0.6951
+val loss: 0.7078
+2025-04-28 18:25:32 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 18:26:18 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e4-rte.pth
+2025-04-28 18:26:22 - INFO - 
+epoch 4
+training loss: 0.6966
+val loss: 0.6916
+2025-04-28 18:26:22 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 18:27:08 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e5-rte.pth
+2025-04-28 18:27:12 - INFO - 
+epoch 5
+training loss: 0.6962
+val loss: 0.6952
+2025-04-28 18:27:12 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 18:27:58 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e6-rte.pth
+2025-04-28 18:28:02 - INFO - 
+epoch 6
+training loss: 0.6963
+val loss: 0.6930
+2025-04-28 18:28:02 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 18:28:48 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e7-rte.pth
+2025-04-28 18:28:51 - INFO - 
+epoch 7
+training loss: 0.6975
+val loss: 0.7013
+2025-04-28 18:28:51 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 18:29:37 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e8-rte.pth
+2025-04-28 18:29:41 - INFO - 
+epoch 8
+training loss: 0.6977
+val loss: 0.6930
+2025-04-28 18:29:41 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 18:30:27 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/full-roberta-base/roberta-base-e9-rte.pth
+2025-04-28 18:30:31 - INFO - 
+epoch 9
+training loss: 0.6952
+val loss: 0.6919
+2025-04-28 18:30:31 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
