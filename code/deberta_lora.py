@@ -4,15 +4,13 @@ from transformers import get_linear_schedule_with_warmup
 from datasets import load_dataset
 import torch
 from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score, matthews_corrcoef
-from scipy.stats import pearsonr
 from tqdm import tqdm
 import argparse
 import logging
 
 # importing custom LORA functions
 from lora_layers import inject_lora_to_kq_attn
-from roberta_lora import val
+from train_val_berta import train
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -149,73 +147,9 @@ def train_deberta(args, model):
         scheduler.load_state_dict(checkpoint['scheduler'])
         start_epoch = checkpoint['epoch'] + 1
     
-    remaining_epochs = GLUE_NUM_EPOCHS[task_name] - start_epoch
-    for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
-        model.train()
-        train_running_loss = 0
-        for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):
-            optimizer.zero_grad()
-
-            batch = {k: v.to(device) for k, v in batch.items()}
-            outputs = model(**batch)
-
-            loss = outputs.loss
-            loss.backward()
-            optimizer.step()
-            scheduler.step()
-
-            train_running_loss += loss.item()
-      
-        # save model after every epoch
-        torch.save(model.state_dict(), f"{args.save_dir}/{args.model_name.split('/')[-1]}-e{e}-{task_name}.pth")
-        logging.info(f"Model saved to {args.save_dir}/{args.model_name.split('/')[-1]}-e{e}-{task_name}.pth")
-      
-        avg_train_loss = train_running_loss / len(train_loader)
-        if task_name == "mnli":
-            # MNLI has two validation sets
-            print(f"epoch {e}")
-            print(f"training loss: {avg_train_loss:.4f}")
-            logging.info(f"epoch {e}")
-            logging.info(f"training loss: {avg_train_loss:.4f}")
-            
-            metrics_matched, avg_val_loss_matched = val_deberta(model, val_loader["matched"], task_name, device)
-            metrics_mismatched, avg_val_loss_mismatched = val_deberta(model, val_loader["mismatched"], task_name, device)
-            
-            matched_size = len(val_loader["matched"].dataset)
-            mismatched_size = len(val_loader["mismatched"].dataset)
-            avg_val_loss = (avg_val_loss_matched * matched_size + avg_val_loss_mismatched * mismatched_size) / (matched_size + mismatched_size)
-            
-            # calculate average accuracy
-            matched_correct = metrics_matched["accuracy"] * matched_size
-            mismatched_correct = metrics_mismatched["accuracy"] * mismatched_size
-            overall_accuracy = (matched_correct + mismatched_correct) / (matched_size + mismatched_size)
-            
-            print(f"val loss: {avg_val_loss:.4f}")
-            print(f"overall accuracy: {overall_accuracy:.4f}")
-            logging.info(f"val loss: {avg_val_loss:.4f}")
-            logging.info(f"overall accuracy: {overall_accuracy:.4f}")
-        else:
-            metrics, avg_val_loss = val(model, val_loader, task_name, device)
-            print(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
-            logging.info(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
-            logging.info(f"val metrics: {metrics}\n")
-
-def compute_metrics(y_true, y_pred, task_name):
-    # use accuracy for most tasks
-    if task_name in ["sst2", "mrpc", "qqp", "rte", "qnli", "mnli"]:
-        acc = accuracy_score(y_true, y_pred)
-        return {"accuracy": acc}
-    elif task_name == "cola":
-        # CoLA uses Matthews correlation coefficient
-        mcc = matthews_corrcoef(y_true, y_pred)
-        return {"mcc": mcc}
-    elif task_name == "stsb":
-        # STS-B uses Pearson correlation
-        pearson_corr, _ = pearsonr(y_true, y_pred)
-        return {"pearson_corr": pearson_corr}
-    else:
-        raise RuntimeError(f"{task_name} not supported.")
-
+    # run shared train function (from train_val_berta.py)
+    train(args, model, device, train_loader, val_loader, optimizer, scheduler, start_epoch, GLUE_NUM_EPOCHS[task_name])
+    
 def main(args):
     logging.basicConfig(
         filename=f'{args.save_dir}/{args.model_name.split("/")[-1]}_{args.task_name}.log',

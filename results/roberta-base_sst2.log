@@ -1,17 +1,426 @@
-2025-04-26 06:30:07 - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
-2025-04-26 06:30:15 - INFO - starting LoRA on roberta-base on GLUE sst2
-2025-04-26 06:30:15 - INFO - running on cuda
-2025-04-26 06:30:59 - INFO - created dataloaders 
-2025-04-26 08:00:58 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-base-e0.pth
-2025-04-26 08:01:26 - INFO - 
+Learning Rate (with warmup ratio) started at 1e-4
+2025-04-27 22:52:53 - INFO - starting LoRA on roberta-base on GLUE sst2
+2025-04-27 22:52:53 - INFO - Number of trainable parameters: 294912
+2025-04-27 22:52:53 - INFO - Percentage of trainable parameters: 0.2360%
+2025-04-27 22:52:54 - INFO - running on cuda
+2025-04-27 22:53:01 - INFO - created dataloaders
+2025-04-27 23:05:26 - INFO - Model saved to ../results/roberta-base-e1-sst2.pth
+2025-04-27 23:05:30 - INFO - 
 epoch 0
-training loss: 0.3627
-val loss: 0.2091
-2025-04-26 08:01:26 - INFO - val metrics: {'accuracy': 0.9231651376146789}
+training loss: 0.6818
+val loss: 0.5654
+2025-04-27 23:05:30 - INFO - val metrics: {'accuracy': 0.8623853211009175}
 
-2025-04-26 09:31:32 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-base-e1.pth
-2025-04-26 09:32:00 - INFO - 
+2025-04-27 23:17:56 - INFO - Model saved to ../results/roberta-base-e2-sst2.pth
+2025-04-27 23:17:59 - INFO - 
 epoch 1
-training loss: 0.2742
-val loss: 0.2644
-2025-04-26 09:32:00 - INFO - val metrics: {'accuracy': 0.9025229357798165}
+training loss: 0.5406
+val loss: 0.3719
+2025-04-27 23:17:59 - INFO - val metrics: {'accuracy': 0.8841743119266054}
+
+2025-04-27 23:30:25 - INFO - Model saved to ../results/roberta-base-e3-sst2.pth
+2025-04-27 23:30:29 - INFO - 
+epoch 2
+training loss: 0.4486
+val loss: 0.3058
+2025-04-27 23:30:29 - INFO - val metrics: {'accuracy': 0.9036697247706422}
+
+2025-04-27 23:42:55 - INFO - Model saved to ../results/roberta-base-e4-sst2.pth
+2025-04-27 23:42:59 - INFO - 
+epoch 3
+training loss: 0.3999
+val loss: 0.2824
+2025-04-27 23:42:59 - INFO - val metrics: {'accuracy': 0.9105504587155964}
+
+2025-04-27 23:55:24 - INFO - Model saved to ../results/roberta-base-e5-sst2.pth
+2025-04-27 23:55:28 - INFO - 
+epoch 4
+training loss: 0.3722
+val loss: 0.2837
+2025-04-27 23:55:28 - INFO - val metrics: {'accuracy': 0.9025229357798165}
+
+2025-04-28 00:07:54 - INFO - Model saved to ../results/roberta-base-e6-sst2.pth
+2025-04-28 00:07:58 - INFO - 
+epoch 5
+training loss: 0.3559
+val loss: 0.2628
+2025-04-28 00:07:58 - INFO - val metrics: {'accuracy': 0.9185779816513762}
+
+2025-04-28 00:20:24 - INFO - Model saved to ../results/roberta-base-e7-sst2.pth
+2025-04-28 00:20:28 - INFO - 
+epoch 6
+training loss: 0.3423
+val loss: 0.2758
+2025-04-28 00:20:28 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 00:32:54 - INFO - Model saved to ../results/roberta-base-e8-sst2.pth
+2025-04-28 00:32:58 - INFO - 
+epoch 7
+training loss: 0.3325
+val loss: 0.2922
+2025-04-28 00:32:58 - INFO - val metrics: {'accuracy': 0.9013761467889908}
+
+2025-04-28 00:45:24 - INFO - Model saved to ../results/roberta-base-e9-sst2.pth
+2025-04-28 00:45:28 - INFO - 
+epoch 8
+training loss: 0.3260
+val loss: 0.2682
+2025-04-28 00:45:28 - INFO - val metrics: {'accuracy': 0.908256880733945}
+
+2025-04-28 00:57:54 - INFO - Model saved to ../results/roberta-base-e10-sst2.pth
+2025-04-28 00:57:58 - INFO - 
+epoch 9
+training loss: 0.3212
+val loss: 0.2653
+2025-04-28 00:57:58 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 01:10:25 - INFO - Model saved to ../results/roberta-base-e11-sst2.pth
+2025-04-28 01:10:28 - INFO - 
+epoch 10
+training loss: 0.3157
+val loss: 0.2874
+2025-04-28 01:10:28 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 01:22:55 - INFO - Model saved to ../results/roberta-base-e12-sst2.pth
+2025-04-28 01:22:59 - INFO - 
+epoch 11
+training loss: 0.3100
+val loss: 0.2818
+2025-04-28 01:22:59 - INFO - val metrics: {'accuracy': 0.9105504587155964}
+
+2025-04-28 01:35:25 - INFO - Model saved to ../results/roberta-base-e13-sst2.pth
+2025-04-28 01:35:29 - INFO - 
+epoch 12
+training loss: 0.3041
+val loss: 0.2640
+2025-04-28 01:35:29 - INFO - val metrics: {'accuracy': 0.9128440366972477}
+
+2025-04-28 01:47:55 - INFO - Model saved to ../results/roberta-base-e14-sst2.pth
+2025-04-28 01:47:59 - INFO - 
+epoch 13
+training loss: 0.3014
+val loss: 0.2906
+2025-04-28 01:47:59 - INFO - val metrics: {'accuracy': 0.9013761467889908}
+
+2025-04-28 02:00:25 - INFO - Model saved to ../results/roberta-base-e15-sst2.pth
+2025-04-28 02:00:29 - INFO - 
+epoch 14
+training loss: 0.2976
+val loss: 0.2973
+2025-04-28 02:00:29 - INFO - val metrics: {'accuracy': 0.8956422018348624}
+
+2025-04-28 02:12:56 - INFO - Model saved to ../results/roberta-base-e16-sst2.pth
+2025-04-28 02:12:59 - INFO - 
+epoch 15
+training loss: 0.2924
+val loss: 0.2688
+2025-04-28 02:12:59 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 02:25:26 - INFO - Model saved to ../results/roberta-base-e17-sst2.pth
+2025-04-28 02:25:30 - INFO - 
+epoch 16
+training loss: 0.2901
+val loss: 0.2837
+2025-04-28 02:25:30 - INFO - val metrics: {'accuracy': 0.9071100917431193}
+
+2025-04-28 02:37:56 - INFO - Model saved to ../results/roberta-base-e18-sst2.pth
+2025-04-28 02:38:00 - INFO - 
+epoch 17
+training loss: 0.2876
+val loss: 0.2558
+2025-04-28 02:38:00 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 02:50:27 - INFO - Model saved to ../results/roberta-base-e19-sst2.pth
+2025-04-28 02:50:30 - INFO - 
+epoch 18
+training loss: 0.2822
+val loss: 0.2765
+2025-04-28 02:50:30 - INFO - val metrics: {'accuracy': 0.9025229357798165}
+
+2025-04-28 03:02:57 - INFO - Model saved to ../results/roberta-base-e20-sst2.pth
+2025-04-28 03:03:01 - INFO - 
+epoch 19
+training loss: 0.2807
+val loss: 0.2646
+2025-04-28 03:03:01 - INFO - val metrics: {'accuracy': 0.9185779816513762}
+
+2025-04-28 03:15:26 - INFO - Model saved to ../results/roberta-base-e21-sst2.pth
+2025-04-28 03:15:30 - INFO - 
+epoch 20
+training loss: 0.2772
+val loss: 0.2758
+2025-04-28 03:15:30 - INFO - val metrics: {'accuracy': 0.9059633027522935}
+
+2025-04-28 03:27:56 - INFO - Model saved to ../results/roberta-base-e22-sst2.pth
+2025-04-28 03:28:00 - INFO - 
+epoch 21
+training loss: 0.2765
+val loss: 0.2920
+2025-04-28 03:28:00 - INFO - val metrics: {'accuracy': 0.8979357798165137}
+
+2025-04-28 03:40:27 - INFO - Model saved to ../results/roberta-base-e23-sst2.pth
+2025-04-28 03:40:31 - INFO - 
+epoch 22
+training loss: 0.2738
+val loss: 0.2866
+2025-04-28 03:40:31 - INFO - val metrics: {'accuracy': 0.9025229357798165}
+
+2025-04-28 03:52:57 - INFO - Model saved to ../results/roberta-base-e24-sst2.pth
+2025-04-28 03:53:01 - INFO - 
+epoch 23
+training loss: 0.2718
+val loss: 0.2646
+2025-04-28 03:53:01 - INFO - val metrics: {'accuracy': 0.9105504587155964}
+
+2025-04-28 04:05:27 - INFO - Model saved to ../results/roberta-base-e25-sst2.pth
+2025-04-28 04:05:31 - INFO - 
+epoch 24
+training loss: 0.2682
+val loss: 0.2782
+2025-04-28 04:05:31 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 04:17:57 - INFO - Model saved to ../results/roberta-base-e26-sst2.pth
+2025-04-28 04:18:01 - INFO - 
+epoch 25
+training loss: 0.2645
+val loss: 0.2563
+2025-04-28 04:18:01 - INFO - val metrics: {'accuracy': 0.9139908256880734}
+
+2025-04-28 04:30:27 - INFO - Model saved to ../results/roberta-base-e27-sst2.pth
+2025-04-28 04:30:31 - INFO - 
+epoch 26
+training loss: 0.2628
+val loss: 0.2578
+2025-04-28 04:30:31 - INFO - val metrics: {'accuracy': 0.9162844036697247}
+
+2025-04-28 04:42:57 - INFO - Model saved to ../results/roberta-base-e28-sst2.pth
+2025-04-28 04:43:01 - INFO - 
+epoch 27
+training loss: 0.2619
+val loss: 0.2609
+2025-04-28 04:43:01 - INFO - val metrics: {'accuracy': 0.9151376146788991}
+
+2025-04-28 04:55:28 - INFO - Model saved to ../results/roberta-base-e29-sst2.pth
+2025-04-28 04:55:32 - INFO - 
+epoch 28
+training loss: 0.2599
+val loss: 0.2846
+2025-04-28 04:55:32 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 05:07:58 - INFO - Model saved to ../results/roberta-base-e30-sst2.pth
+2025-04-28 05:08:02 - INFO - 
+epoch 29
+training loss: 0.2569
+val loss: 0.2525
+2025-04-28 05:08:02 - INFO - val metrics: {'accuracy': 0.9162844036697247}
+
+2025-04-28 05:20:28 - INFO - Model saved to ../results/roberta-base-e31-sst2.pth
+2025-04-28 05:20:32 - INFO - 
+epoch 30
+training loss: 0.2570
+val loss: 0.2700
+2025-04-28 05:20:32 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 05:32:58 - INFO - Model saved to ../results/roberta-base-e32-sst2.pth
+2025-04-28 05:33:02 - INFO - 
+epoch 31
+training loss: 0.2536
+val loss: 0.2606
+2025-04-28 05:33:02 - INFO - val metrics: {'accuracy': 0.9174311926605505}
+
+2025-04-28 05:45:29 - INFO - Model saved to ../results/roberta-base-e33-sst2.pth
+2025-04-28 05:45:33 - INFO - 
+epoch 32
+training loss: 0.2496
+val loss: 0.2693
+2025-04-28 05:45:33 - INFO - val metrics: {'accuracy': 0.9162844036697247}
+
+2025-04-28 05:57:59 - INFO - Model saved to ../results/roberta-base-e34-sst2.pth
+2025-04-28 05:58:03 - INFO - 
+epoch 33
+training loss: 0.2504
+val loss: 0.2813
+2025-04-28 05:58:03 - INFO - val metrics: {'accuracy': 0.9025229357798165}
+
+2025-04-28 06:10:29 - INFO - Model saved to ../results/roberta-base-e35-sst2.pth
+2025-04-28 06:10:33 - INFO - 
+epoch 34
+training loss: 0.2468
+val loss: 0.3032
+2025-04-28 06:10:33 - INFO - val metrics: {'accuracy': 0.9002293577981652}
+
+2025-04-28 06:23:00 - INFO - Model saved to ../results/roberta-base-e36-sst2.pth
+2025-04-28 06:23:04 - INFO - 
+epoch 35
+training loss: 0.2471
+val loss: 0.2616
+2025-04-28 06:23:04 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 06:35:30 - INFO - Model saved to ../results/roberta-base-e37-sst2.pth
+2025-04-28 06:35:34 - INFO - 
+epoch 36
+training loss: 0.2434
+val loss: 0.2596
+2025-04-28 06:35:34 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 06:48:00 - INFO - Model saved to ../results/roberta-base-e38-sst2.pth
+2025-04-28 06:48:04 - INFO - 
+epoch 37
+training loss: 0.2428
+val loss: 0.2584
+2025-04-28 06:48:04 - INFO - val metrics: {'accuracy': 0.9139908256880734}
+
+2025-04-28 07:00:31 - INFO - Model saved to ../results/roberta-base-e39-sst2.pth
+2025-04-28 07:00:35 - INFO - 
+epoch 38
+training loss: 0.2419
+val loss: 0.2749
+2025-04-28 07:00:35 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 07:13:01 - INFO - Model saved to ../results/roberta-base-e40-sst2.pth
+2025-04-28 07:13:05 - INFO - 
+epoch 39
+training loss: 0.2400
+val loss: 0.2695
+2025-04-28 07:13:05 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 07:25:31 - INFO - Model saved to ../results/roberta-base-e41-sst2.pth
+2025-04-28 07:25:35 - INFO - 
+epoch 40
+training loss: 0.2372
+val loss: 0.2604
+2025-04-28 07:25:35 - INFO - val metrics: {'accuracy': 0.9128440366972477}
+
+2025-04-28 07:38:01 - INFO - Model saved to ../results/roberta-base-e42-sst2.pth
+2025-04-28 07:38:05 - INFO - 
+epoch 41
+training loss: 0.2375
+val loss: 0.2779
+2025-04-28 07:38:05 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 07:50:31 - INFO - Model saved to ../results/roberta-base-e43-sst2.pth
+2025-04-28 07:50:35 - INFO - 
+epoch 42
+training loss: 0.2348
+val loss: 0.2733
+2025-04-28 07:50:35 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 08:03:01 - INFO - Model saved to ../results/roberta-base-e44-sst2.pth
+2025-04-28 08:03:05 - INFO - 
+epoch 43
+training loss: 0.2321
+val loss: 0.2791
+2025-04-28 08:03:05 - INFO - val metrics: {'accuracy': 0.908256880733945}
+
+2025-04-28 08:15:31 - INFO - Model saved to ../results/roberta-base-e45-sst2.pth
+2025-04-28 08:15:35 - INFO - 
+epoch 44
+training loss: 0.2329
+val loss: 0.2620
+2025-04-28 08:15:35 - INFO - val metrics: {'accuracy': 0.911697247706422}
+
+2025-04-28 08:28:01 - INFO - Model saved to ../results/roberta-base-e46-sst2.pth
+2025-04-28 08:28:05 - INFO - 
+epoch 45
+training loss: 0.2314
+val loss: 0.2719
+2025-04-28 08:28:05 - INFO - val metrics: {'accuracy': 0.908256880733945}
+
+2025-04-28 08:40:31 - INFO - Model saved to ../results/roberta-base-e47-sst2.pth
+2025-04-28 08:40:35 - INFO - 
+epoch 46
+training loss: 0.2300
+val loss: 0.2552
+2025-04-28 08:40:35 - INFO - val metrics: {'accuracy': 0.9185779816513762}
+
+2025-04-28 08:53:02 - INFO - Model saved to ../results/roberta-base-e48-sst2.pth
+2025-04-28 08:53:06 - INFO - 
+epoch 47
+training loss: 0.2282
+val loss: 0.2723
+2025-04-28 08:53:06 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 09:05:32 - INFO - Model saved to ../results/roberta-base-e49-sst2.pth
+2025-04-28 09:05:36 - INFO - 
+epoch 48
+training loss: 0.2259
+val loss: 0.2843
+2025-04-28 09:05:36 - INFO - val metrics: {'accuracy': 0.9059633027522935}
+
+2025-04-28 09:18:02 - INFO - Model saved to ../results/roberta-base-e50-sst2.pth
+2025-04-28 09:18:06 - INFO - 
+epoch 49
+training loss: 0.2267
+val loss: 0.2689
+2025-04-28 09:18:06 - INFO - val metrics: {'accuracy': 0.9105504587155964}
+
+2025-04-28 09:30:32 - INFO - Model saved to ../results/roberta-base-e51-sst2.pth
+2025-04-28 09:30:36 - INFO - 
+epoch 50
+training loss: 0.2251
+val loss: 0.2773
+2025-04-28 09:30:36 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 09:43:02 - INFO - Model saved to ../results/roberta-base-e52-sst2.pth
+2025-04-28 09:43:06 - INFO - 
+epoch 51
+training loss: 0.2236
+val loss: 0.2793
+2025-04-28 09:43:06 - INFO - val metrics: {'accuracy': 0.9128440366972477}
+
+2025-04-28 09:55:33 - INFO - Model saved to ../results/roberta-base-e53-sst2.pth
+2025-04-28 09:55:36 - INFO - 
+epoch 52
+training loss: 0.2226
+val loss: 0.2655
+2025-04-28 09:55:36 - INFO - val metrics: {'accuracy': 0.9174311926605505}
+
+2025-04-28 10:08:03 - INFO - Model saved to ../results/roberta-base-e54-sst2.pth
+2025-04-28 10:08:07 - INFO - 
+epoch 53
+training loss: 0.2235
+val loss: 0.2691
+2025-04-28 10:08:07 - INFO - val metrics: {'accuracy': 0.9139908256880734}
+
+2025-04-28 10:20:33 - INFO - Model saved to ../results/roberta-base-e55-sst2.pth
+2025-04-28 10:20:37 - INFO - 
+epoch 54
+training loss: 0.2219
+val loss: 0.2678
+2025-04-28 10:20:37 - INFO - val metrics: {'accuracy': 0.9162844036697247}
+
+2025-04-28 10:33:03 - INFO - Model saved to ../results/roberta-base-e56-sst2.pth
+2025-04-28 10:33:07 - INFO - 
+epoch 55
+training loss: 0.2213
+val loss: 0.2766
+2025-04-28 10:33:07 - INFO - val metrics: {'accuracy': 0.9094036697247706}
+
+2025-04-28 10:45:34 - INFO - Model saved to ../results/roberta-base-e57-sst2.pth
+2025-04-28 10:45:37 - INFO - 
+epoch 56
+training loss: 0.2213
+val loss: 0.2685
+2025-04-28 10:45:37 - INFO - val metrics: {'accuracy': 0.9151376146788991}
+
+2025-04-28 10:58:04 - INFO - Model saved to ../results/roberta-base-e58-sst2.pth
+2025-04-28 10:58:08 - INFO - 
+epoch 57
+training loss: 0.2191
+val loss: 0.2702
+2025-04-28 10:58:08 - INFO - val metrics: {'accuracy': 0.9139908256880734}
+
+2025-04-28 11:10:34 - INFO - Model saved to ../results/roberta-base-e59-sst2.pth
+2025-04-28 11:10:38 - INFO - 
+epoch 58
+training loss: 0.2202
+val loss: 0.2696
+2025-04-28 11:10:38 - INFO - val metrics: {'accuracy': 0.9128440366972477}
+
+2025-04-28 11:23:04 - INFO - Model saved to ../results/roberta-base-e60-sst2.pth
+2025-04-28 11:23:08 - INFO - 
+epoch 59
+training loss: 0.2182
+val loss: 0.2672
+2025-04-28 11:23:08 - INFO - val metrics: {'accuracy': 0.9151376146788991}
+

@@ -2,5 +2,4 @@
 venv/
 *__pycache*
 *.pth
-roberta-TEMP.py
 *.log
