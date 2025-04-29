@@ -22,18 +22,15 @@ def get_args():
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--num-epochs", type=int, default=10)
     parser.add_argument("--max-seq-len", type=int, default=512)
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--rank", type=int, default=8, help="LoRA parameter rank")
+    parser.add_argument("--alpha", type=int, default=8, help="LoRA parameter alpha")
 
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
     parser.add_argument("--resume-optimizer", type=str, default="None", help="If not 'None', contains path to optimizer state from which to resume training.")
     parser.add_argument("--save-dir", type=str, default="../results")
 
     return parser.parse_args()
-
-LEARNING_RATE = 1e-4
-
-# most common config in LoRA paper experiments
-RANK = 8
-ALPHA = 8
 
 GLUE_TASK_TOKENIZE = {
     "sst2": ("sentence", None),
@@ -113,7 +110,7 @@ def train(args, model):
     logging.info(f"Created dataloaders")
 
     # similar to LoRA paper, use AdamW and Linear LR scheduler (without warmup ratio however)
-    optimizer = torch.optim.AdamW(model.parameters(), weight_decay=0.01, lr=LEARNING_RATE)
+    optimizer = torch.optim.AdamW(model.parameters(), weight_decay=0.01, lr=args.lr)
     scheduler = torch.optim.lr_scheduler.LinearLR(optimizer)
 
     # potentially reload optimizer and scheduler state
@@ -141,16 +138,17 @@ def train(args, model):
 
         train_running_loss += loss.item()
       
-      # save model after every epoch
-      torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
-      logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
+      # save model only at beg and end (to save memory)
+      if e == 0 or (e+1) >= remaining_epochs:
+        torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
+        logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
 
-      # save optimizer and scheduler state
-      optimizer_save_path = f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}_optimizer.pth"
-      torch.save({
-          'epoch': e,
-          'optimizer': optimizer.state_dict(),
-      }, optimizer_save_path)
+        # save optimizer and scheduler state
+        optimizer_save_path = f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}_optimizer.pth"
+        torch.save({
+            'epoch': e,
+            'optimizer': optimizer.state_dict(),
+        }, optimizer_save_path)
       
       avg_train_loss = train_running_loss / len(train_loader)
       metrics, avg_val_loss = val(model, val_loader, task_name, device)
@@ -175,13 +173,13 @@ def main(args):
     
       # log all the hyperparameters use in this run
     logging.info(f"Starting {args.model_name} on {args.task_name}, {lora}")
-    logging.info(f"Config: num_epochs: {args.num_epochs}, learning rate: {LEARNING_RATE}, batch size {args.num_epochs}, max_seq_len {args.max_seq_len}")
+    logging.info(f"Config: num_epochs: {args.num_epochs}, learning rate: {args.lr}, batch size {args.batch_size}, max_seq_len {args.max_seq_len}")
 
     # run this baseline model on a binary task
     model = AutoModelForSequenceClassification.from_pretrained(args.model_name, num_labels=2)
     if args.lora:
-      inject_lora_to_kq_attn(args, model, RANK, ALPHA)
-      logging.info(f"Applying LoRA with r={RANK}, alpha={ALPHA}")
+      inject_lora_to_kq_attn(args, model, args.rank, args.alpha)
+      logging.info(f"Applying LoRA with r={args.rank}, alpha={args.alpha}")
 
     # NOTE sanity check to ensure LoRA is only training small subset of parameters
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
