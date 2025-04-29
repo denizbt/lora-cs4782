@@ -1,4 +1,4 @@
-Learning Rate (with warmup ratio) started at 1e-4
+Learning Rate (with warmup ratio) started at 1e-4, r = 8, alpha = 8
 2025-04-27 22:52:53 - INFO - starting LoRA on roberta-base on GLUE sst2
 2025-04-27 22:52:53 - INFO - Number of trainable parameters: 294912
 2025-04-27 22:52:53 - INFO - Percentage of trainable parameters: 0.2360%

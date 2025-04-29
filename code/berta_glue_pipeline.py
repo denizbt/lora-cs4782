@@ -164,6 +164,7 @@ def train(args, model):
       avg_train_loss = train_running_loss / len(train_loader)
       metrics, avg_val_loss = val(model, val_loader, task_name, device)
       print(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
+      print(f"val metrics: {metrics}\n")
       logging.info(f"\nepoch {e}\ntraining loss: {avg_train_loss:.4f}\nval loss: {avg_val_loss:.4f}")
       logging.info(f"val metrics: {metrics}\n")
 
