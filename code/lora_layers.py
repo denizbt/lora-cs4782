@@ -49,7 +49,7 @@ class LoRALayer(nn.Module):
     # LoRA out: BAx multiplied by scale factor alpha/r
     lora_out = self.scale_factor * (x @ self.B @ self.A)
 
-    return Wo_out + self.scale_factor * lora_out
+    return Wo_out + lora_out
 
 def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
     """

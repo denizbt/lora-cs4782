@@ -1,0 +1,77 @@
+2025-04-28 22:28:01 - INFO - Starting microsoft/deberta-v2-xxlarge on rte, lora
+2025-04-28 22:28:01 - INFO - Config: num_epochs: 10, learning rate: 0.0001, batch size 8, max_seq_len 128
+2025-04-28 22:28:10 - INFO - Applying LoRA with r=8, alpha=8
+2025-04-28 22:28:10 - INFO - Number of trainable parameters: 2359296
+2025-04-28 22:28:10 - INFO - Percentage of trainable parameters: 0.1503%
+2025-04-28 22:28:12 - INFO - running on cuda
+2025-04-28 22:28:26 - INFO - Created dataloaders
+2025-04-28 22:31:32 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e0-rte.pth
+2025-04-28 22:31:40 - INFO - 
+epoch 0
+training loss: 0.7017
+val loss: 0.6903
+2025-04-28 22:31:40 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:34:49 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e1-rte.pth
+2025-04-28 22:34:57 - INFO - 
+epoch 1
+training loss: 0.7491
+val loss: 0.7646
+2025-04-28 22:34:57 - INFO - val metrics: {'accuracy': 0.51985559566787}
+
+2025-04-28 22:38:02 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e2-rte.pth
+2025-04-28 22:38:10 - INFO - 
+epoch 2
+training loss: 0.7624
+val loss: 0.8255
+2025-04-28 22:38:10 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:41:19 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e3-rte.pth
+2025-04-28 22:41:27 - INFO - 
+epoch 3
+training loss: 0.7129
+val loss: 0.8255
+2025-04-28 22:41:27 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:44:32 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e4-rte.pth
+2025-04-28 22:44:41 - INFO - 
+epoch 4
+training loss: 0.7120
+val loss: 0.8255
+2025-04-28 22:44:41 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:47:48 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e5-rte.pth
+2025-04-28 22:47:56 - INFO - 
+epoch 5
+training loss: 0.7056
+val loss: 0.8257
+2025-04-28 22:47:56 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:51:01 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e6-rte.pth
+2025-04-28 22:51:10 - INFO - 
+epoch 6
+training loss: 0.7066
+val loss: 0.8256
+2025-04-28 22:51:10 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:54:18 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e7-rte.pth
+2025-04-28 22:54:27 - INFO - 
+epoch 7
+training loss: 0.7197
+val loss: 0.8260
+2025-04-28 22:54:27 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 22:57:32 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e8-rte.pth
+2025-04-28 22:57:40 - INFO - 
+epoch 8
+training loss: 0.7100
+val loss: 0.8256
+2025-04-28 22:57:40 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-28 23:00:48 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e9-rte.pth
+2025-04-28 23:00:56 - INFO - 
+epoch 9
+training loss: 0.7180
+val loss: 0.8255
+2025-04-28 23:00:56 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+

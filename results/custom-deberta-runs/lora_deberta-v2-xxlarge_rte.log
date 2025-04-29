@@ -1,0 +1,70 @@
+2025-04-28 23:43:01 - INFO - Starting microsoft/deberta-v2-xxlarge on rte, lora
+2025-04-28 23:43:01 - INFO - Config: num_epochs: 10, learning rate: 1e-05, batch size 8, max_seq_len 128
+2025-04-28 23:43:33 - INFO - Applying LoRA with r=8, alpha=8
+2025-04-28 23:43:33 - INFO - Number of trainable parameters: 2359296
+2025-04-28 23:43:33 - INFO - Percentage of trainable parameters: 0.1503%
+2025-04-28 23:43:35 - INFO - running on cuda
+2025-04-28 23:43:50 - INFO - Created dataloaders
+2025-04-28 23:46:56 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e0-rte.pth
+2025-04-28 23:47:05 - INFO - 
+epoch 0
+training loss: 0.7049
+val loss: 0.7036
+2025-04-28 23:47:05 - INFO - val metrics: {'accuracy': 0.47653429602888087}
+
+2025-04-28 23:49:59 - INFO - 
+epoch 1
+training loss: 0.7067
+val loss: 0.7026
+2025-04-28 23:49:59 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 23:52:53 - INFO - 
+epoch 2
+training loss: 0.7011
+val loss: 0.7013
+2025-04-28 23:52:53 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 23:55:47 - INFO - 
+epoch 3
+training loss: 0.6991
+val loss: 0.7007
+2025-04-28 23:55:47 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-28 23:58:54 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e4-rte.pth
+2025-04-28 23:59:02 - INFO - 
+epoch 4
+training loss: 0.7018
+val loss: 0.6996
+2025-04-28 23:59:02 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-29 00:01:57 - INFO - 
+epoch 5
+training loss: 0.6970
+val loss: 0.6983
+2025-04-29 00:01:57 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-29 00:04:51 - INFO - 
+epoch 6
+training loss: 0.6968
+val loss: 0.6974
+2025-04-29 00:04:51 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-29 00:07:45 - INFO - 
+epoch 7
+training loss: 0.6954
+val loss: 0.6966
+2025-04-29 00:07:45 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-29 00:10:39 - INFO - 
+epoch 8
+training loss: 0.6939
+val loss: 0.6960
+2025-04-29 00:10:39 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+
+2025-04-29 00:13:44 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results//lora_deberta-v2-xxlarge-e9-rte.pth
+2025-04-29 00:13:52 - INFO - 
+epoch 9
+training loss: 0.6947
+val loss: 0.6944
+2025-04-29 00:13:52 - INFO - val metrics: {'accuracy': 0.4729241877256318}
+

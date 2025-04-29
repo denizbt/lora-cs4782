@@ -1,0 +1,69 @@
+2025-04-29 14:31:23 - INFO - Starting roberta-base on rte, full
+2025-04-29 14:31:23 - INFO - Config: num_epochs: 10, learning rate: 1e-05, batch size 32, max_seq_len 512
+2025-04-29 14:31:33 - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-04-29 14:31:34 - INFO - Number of trainable parameters: 124647170
+2025-04-29 14:31:34 - INFO - Percentage of trainable parameters: 100.0000%
+2025-04-29 14:31:34 - INFO - running on cuda
+2025-04-29 14:31:55 - INFO - Created dataloaders
+2025-04-29 14:33:28 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/rte-1e-5/full_roberta-base-e0-rte.pth
+2025-04-29 14:33:33 - INFO - 
+epoch 0
+training loss: 0.6941
+val loss: 0.6902
+2025-04-29 14:33:33 - INFO - val metrics: {'accuracy': 0.5270758122743683}
+
+2025-04-29 14:35:11 - INFO - 
+epoch 1
+training loss: 0.6688
+val loss: 0.6600
+2025-04-29 14:35:11 - INFO - val metrics: {'accuracy': 0.6353790613718412}
+
+2025-04-29 14:36:48 - INFO - 
+epoch 2
+training loss: 0.5463
+val loss: 0.5371
+2025-04-29 14:36:48 - INFO - val metrics: {'accuracy': 0.7220216606498195}
+
+2025-04-29 14:38:26 - INFO - 
+epoch 3
+training loss: 0.3833
+val loss: 0.5412
+2025-04-29 14:38:26 - INFO - val metrics: {'accuracy': 0.740072202166065}
+
+2025-04-29 14:40:03 - INFO - 
+epoch 4
+training loss: 0.2445
+val loss: 0.6797
+2025-04-29 14:40:03 - INFO - val metrics: {'accuracy': 0.7545126353790613}
+
+2025-04-29 14:41:40 - INFO - 
+epoch 5
+training loss: 0.1647
+val loss: 0.7004
+2025-04-29 14:41:40 - INFO - val metrics: {'accuracy': 0.7653429602888087}
+
+2025-04-29 14:43:18 - INFO - 
+epoch 6
+training loss: 0.1031
+val loss: 0.9629
+2025-04-29 14:43:18 - INFO - val metrics: {'accuracy': 0.7472924187725631}
+
+2025-04-29 14:44:55 - INFO - 
+epoch 7
+training loss: 0.0709
+val loss: 0.8949
+2025-04-29 14:44:55 - INFO - val metrics: {'accuracy': 0.7581227436823105}
+
+2025-04-29 14:46:32 - INFO - 
+epoch 8
+training loss: 0.0575
+val loss: 0.9511
+2025-04-29 14:46:32 - INFO - val metrics: {'accuracy': 0.7653429602888087}
+
+2025-04-29 14:48:07 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/rte-1e-5/full_roberta-base-e9-rte.pth
+2025-04-29 14:48:13 - INFO - 
+epoch 9
+training loss: 0.0479
+val loss: 0.9188
+2025-04-29 14:48:13 - INFO - val metrics: {'accuracy': 0.7870036101083032}
+

@@ -1,6 +1,7 @@
 """
-This script runs a roberta-base OR deberta-base-xxl model with and without LoRA implementation on a single binary GLUE task
-with identical set of hyperparameters which differ from LoRA paper (in order to complete training in a shorter time with limited compute).
+This script runs a roberta-base OR deberta-base-xxl model with and without LoRA implementation on a single binary GLUE task.
+
+Intended to be run on diff set of hyperparameters from LoRA paper (for experimentation in a shorter time with limited compute).
 """
 
 from transformers import AutoModelForSequenceClassification, RobertaTokenizer, DebertaV2Tokenizer
@@ -22,7 +23,7 @@ def get_args():
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--num-epochs", type=int, default=10)
     parser.add_argument("--max-seq-len", type=int, default=512)
-    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--rank", type=int, default=8, help="LoRA parameter rank")
     parser.add_argument("--alpha", type=int, default=8, help="LoRA parameter alpha")
 
@@ -138,8 +139,20 @@ def train(args, model):
 
         train_running_loss += loss.item()
       
+      # deberta-xxl takes forever to train, so save every epoch
+      if "deberta" in args.model_name:
+        torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
+        logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
+
+        # save optimizer and scheduler state
+        optimizer_save_path = f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}_optimizer.pth"
+        torch.save({
+            'epoch': e,
+            'optimizer': optimizer.state_dict(),
+        }, optimizer_save_path)
       # save model only at beg and end (to save memory)
-      if e == 0 or (e+1) >= remaining_epochs:
+      elif e == 0 or (e+1) >= remaining_epochs:
+        
         torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
         logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
 

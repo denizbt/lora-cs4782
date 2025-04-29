@@ -1,0 +1,69 @@
+2025-04-29 14:28:29 - INFO - Starting roberta-base on mrpc, lora
+2025-04-29 14:28:29 - INFO - Config: num_epochs: 10, learning rate: 1e-05, batch size 32, max_seq_len 512
+2025-04-29 14:28:34 - INFO - Applying LoRA with r=8, alpha=8
+2025-04-29 14:28:34 - INFO - Number of trainable parameters: 294912
+2025-04-29 14:28:34 - INFO - Percentage of trainable parameters: 0.2360%
+2025-04-29 14:28:35 - INFO - running on cuda
+2025-04-29 14:28:45 - INFO - Created dataloaders
+2025-04-29 14:32:58 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/lora_roberta-base-e0-mrpc.pth
+2025-04-29 14:33:09 - INFO - 
+epoch 0
+training loss: 0.6592
+val loss: 0.6511
+2025-04-29 14:33:09 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:37:31 - INFO - 
+epoch 1
+training loss: 0.6538
+val loss: 0.6461
+2025-04-29 14:37:31 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:41:53 - INFO - 
+epoch 2
+training loss: 0.6494
+val loss: 0.6379
+2025-04-29 14:41:53 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:46:15 - INFO - 
+epoch 3
+training loss: 0.6445
+val loss: 0.6291
+2025-04-29 14:46:15 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:50:37 - INFO - 
+epoch 4
+training loss: 0.6401
+val loss: 0.6213
+2025-04-29 14:50:37 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:54:59 - INFO - 
+epoch 5
+training loss: 0.6342
+val loss: 0.6128
+2025-04-29 14:54:59 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 14:59:21 - INFO - 
+epoch 6
+training loss: 0.6289
+val loss: 0.6066
+2025-04-29 14:59:21 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 15:03:42 - INFO - 
+epoch 7
+training loss: 0.6236
+val loss: 0.6006
+2025-04-29 15:03:42 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 15:08:04 - INFO - 
+epoch 8
+training loss: 0.6200
+val loss: 0.5944
+2025-04-29 15:08:04 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
+2025-04-29 15:12:18 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/lora_roberta-base-e9-mrpc.pth
+2025-04-29 15:12:29 - INFO - 
+epoch 9
+training loss: 0.6174
+val loss: 0.5892
+2025-04-29 15:12:29 - INFO - val metrics: {'accuracy': 0.6838235294117647}
+
