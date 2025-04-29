@@ -8,7 +8,7 @@ import sys
 from sklearn.metrics import accuracy_score, matthews_corrcoef
 from scipy.stats import pearsonr
 import logging
-from tqdm import tqdm
+# from tqdm import tqdm
 
 GLUE_BINARY_TASKS = ["sst2", "mrpc", "cola", "qnli", "qqp", "rte"]
 
@@ -23,8 +23,7 @@ def train(args, model, device, train_loader, val_loader, optimizer, scheduler, s
         save_model_name = args.model_name
     
     # Training loop
-    remaining_epochs = num_epochs - start_epoch
-    for e in range(start_epoch, remaining_epochs):
+    for e in range(start_epoch, num_epochs):
         model.train()
         train_running_loss = 0
         

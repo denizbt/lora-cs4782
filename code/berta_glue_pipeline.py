@@ -122,8 +122,7 @@ def train(args, model):
         optimizer.load_state_dict(checkpoint['optimizer'])
         start_epoch = checkpoint['epoch'] + 1
     
-    remaining_epochs = args.num_epochs - start_epoch
-    for e in tqdm(range(start_epoch, remaining_epochs), leave=True):
+    for e in tqdm(range(start_epoch, args.num_epochs), leave=True):
       model.train()
       train_running_loss = 0
       for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):
@@ -151,8 +150,7 @@ def train(args, model):
             'optimizer': optimizer.state_dict(),
         }, optimizer_save_path)
       # save model only at beg and end (to save memory)
-      elif e == 0 or (e+1) >= remaining_epochs:
-        
+      elif e == 0 or (e+1) >= args.num_epochs:
         torch.save(model.state_dict(), f"{args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
         logging.info(f"Model saved to {args.save_dir}/{lora}_{save_model_name}-e{e}-{task_name}.pth")
 

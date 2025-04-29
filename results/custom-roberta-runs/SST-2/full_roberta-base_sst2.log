@@ -1,0 +1,27 @@
+2025-04-29 18:03:37 - INFO - Starting roberta-base on sst2, full
+2025-04-29 18:03:37 - INFO - Config: num_epochs: 3, learning rate: 0.0001, batch size 32, max_seq_len 256
+2025-04-29 18:03:42 - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-04-29 18:03:44 - INFO - Number of trainable parameters: 124647170
+2025-04-29 18:03:44 - INFO - Percentage of trainable parameters: 100.0000%
+2025-04-29 18:03:44 - INFO - running on cuda
+2025-04-29 18:04:11 - INFO - Created dataloaders
+2025-04-29 18:14:19 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-sst2/full_roberta-base-e0-sst2.pth
+2025-04-29 18:14:23 - INFO - 
+epoch 0
+training loss: 0.6876
+val loss: 0.7011
+2025-04-29 18:14:23 - INFO - val metrics: {'accuracy': 0.5091743119266054}
+
+2025-04-29 18:24:32 - INFO - 
+epoch 1
+training loss: 0.6884
+val loss: 0.7079
+2025-04-29 18:24:32 - INFO - val metrics: {'accuracy': 0.5091743119266054}
+
+2025-04-29 18:34:39 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/roberta-sst2/full_roberta-base-e2-sst2.pth
+2025-04-29 18:34:43 - INFO - 
+epoch 2
+training loss: 0.6876
+val loss: 0.6939
+2025-04-29 18:34:43 - INFO - val metrics: {'accuracy': 0.5091743119266054}
+
