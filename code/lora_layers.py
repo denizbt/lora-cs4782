@@ -75,7 +75,7 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
                   
                   lora_key = LoRALayer(attn.key, rank=rank, alpha=alpha)
                   attn.key = lora_key
-    elif args.model_name == "microsoft/deberta-v2-xxlarge":
+    elif "microsoft/deberta" in args.model_name:
       for layer in model.deberta.encoder.layer:
           if hasattr(layer, "attention"):
               attn = layer.attention

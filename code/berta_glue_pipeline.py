@@ -183,7 +183,7 @@ def main(args):
       datefmt='%Y-%m-%d %H:%M:%S'
     )
     
-      # log all the hyperparameters use in this run
+    # log all the hyperparameters use in this run
     logging.info(f"Starting {args.model_name} on {args.task_name}, {lora}")
     logging.info(f"Config: num_epochs: {args.num_epochs}, learning rate: {args.lr}, batch size {args.batch_size}, max_seq_len {args.max_seq_len}")
 
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     args = get_args()
 
     # check to make sure correct model and task is being run
-    if args.model_name != "roberta-base" and args.model_name != "microsoft/deberta-v2-xxlarge":
+    if args.model_name != "roberta-base" and "microsoft/deberta" not in args.model_name:
        raise RuntimeError(f"This script does not support LoRA for {args.model_name}.")
 
     if args.task_name not in GLUE_BINARY_TASKS:

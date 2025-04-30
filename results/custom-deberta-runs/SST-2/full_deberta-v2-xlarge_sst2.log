@@ -1,0 +1,27 @@
+2025-04-29 21:59:52 - INFO - Starting microsoft/deberta-v2-xlarge on sst2, full
+2025-04-29 21:59:52 - INFO - Config: num_epochs: 3, learning rate: 8e-06, batch size 16, max_seq_len 128
+2025-04-29 22:00:07 - INFO - Number of trainable parameters: 886957058
+2025-04-29 22:00:07 - INFO - Percentage of trainable parameters: 100.0000%
+2025-04-29 22:00:08 - INFO - running on cuda
+2025-04-29 22:00:30 - INFO - Created dataloaders
+2025-04-29 22:49:22 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/deberta-sst2/full_deberta-v2-xlarge-e0-sst2.pth
+2025-04-29 22:50:03 - INFO - 
+epoch 0
+training loss: 0.3961
+val loss: 0.2189
+2025-04-29 22:50:03 - INFO - val metrics: {'accuracy': 0.9197247706422018}
+
+2025-04-29 23:38:50 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/deberta-sst2/full_deberta-v2-xlarge-e1-sst2.pth
+2025-04-29 23:39:27 - INFO - 
+epoch 1
+training loss: 0.2482
+val loss: 0.1853
+2025-04-29 23:39:27 - INFO - val metrics: {'accuracy': 0.9552752293577982}
+
+2025-04-30 00:28:15 - INFO - Model saved to /content/drive/MyDrive/sp25/lora-cs4782/results/deberta-sst2/full_deberta-v2-xlarge-e2-sst2.pth
+2025-04-30 00:28:51 - INFO - 
+epoch 2
+training loss: 0.1747
+val loss: 0.1583
+2025-04-30 00:28:51 - INFO - val metrics: {'accuracy': 0.9495412844036697}
+
