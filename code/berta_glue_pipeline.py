@@ -26,9 +26,7 @@ def get_args():
     parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--rank", type=int, default=8, help="LoRA parameter rank")
     parser.add_argument("--alpha", type=int, default=8, help="LoRA parameter alpha")
-
     parser.add_argument("--resume-training", type=str, default="None", help="If not 'None', contains path to .pth from which to resume training.")
-    parser.add_argument("--resume-optimizer", type=str, default="None", help="If not 'None', contains path to optimizer state from which to resume training.")
     parser.add_argument("--save-dir", type=str, default="../results")
 
     return parser.parse_args()
@@ -113,16 +111,8 @@ def train(args, model):
     # similar to LoRA paper, use AdamW and Linear LR scheduler (without warmup ratio however)
     optimizer = torch.optim.AdamW(model.parameters(), weight_decay=0.01, lr=args.lr)
     scheduler = torch.optim.lr_scheduler.LinearLR(optimizer)
-
-    # potentially reload optimizer and scheduler state
-    start_epoch = 0
-    if args.resume_training != "None" and args.resume_optimizer != "None":
-        logging.info(f"Loading optimizer state from {args.resume_optimizer}")
-        checkpoint = torch.load(args.resume_optimizer, map_location=device)
-        optimizer.load_state_dict(checkpoint['optimizer'])
-        start_epoch = checkpoint['epoch'] + 1
     
-    for e in tqdm(range(start_epoch, args.num_epochs), leave=True):
+    for e in tqdm(range(args.num_epochs), leave=True):
       model.train()
       train_running_loss = 0
       for batch in tqdm(train_loader, desc=f"train (epoch {e})", position=1, leave=False):

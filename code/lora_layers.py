@@ -2,18 +2,19 @@ import torch
 import torch.nn as nn
 
 class LoRALayer(nn.Module):
-  def __init__(self, wo_layer: nn.Linear, rank: int, alpha: int) -> None:
+  def __init__(self, wo_layer, rank: int, alpha: int) -> None:
     """
     LoRA layer, performs low-rank adaptation of given HuggingFace model
     
     Args:
-      wo_layer (nn.Linear): the original attention key or query layer to apply low rank adaptation to.
+      wo_layer: the original attention key or query layer to apply low rank adaptation to.
       rank (int): the low-rank value to use for decomposition
       alpha (int): constant, part of scaling factor for BA
     """
     super().__init__()
     
     self.wo_layer = wo_layer
+
     # freeze weights and bias for this layer
     # LoRA only trains low-rank matrices A, B
     self.wo_layer.weight.requires_grad = False
@@ -44,9 +45,6 @@ class LoRALayer(nn.Module):
     # modified forward pass, eqn (3) from paper
     # h = W_ox + BAx
     Wo_out = self.wo_layer(x)
-
-    # x.size() --> [batch_size, seq_length, embedding_dim]
-    # LoRA out: BAx multiplied by scale factor alpha/r
     lora_out = self.scale_factor * (x @ self.B @ self.A)
 
     return Wo_out + lora_out
@@ -57,10 +55,9 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
     and freezes all parameters except for LoRA matrices i.e. injects LoRA
 
     Args:
-      args (Namespace): command line-arguments to this script
       model (nn.Module): the model to inject LoRA matrices to
     """
-    # freeze all parameters (including encoder and MLP)!!
+    # freeze all parameters (including encoder and MLP)!
     # this goes for every model, following paper which only fine-tunes the attention weights
     for param in model.parameters():
         param.requires_grad = False
@@ -80,16 +77,22 @@ def inject_lora_to_kq_attn(args, model, rank=8, alpha=8):
           if hasattr(layer, "attention"):
               attn = layer.attention
               
-              # Apply LoRA to query projection
+              # apply LoRA to query matriices
               if hasattr(attn, "self") and hasattr(attn.self, "query_proj"):
                   if isinstance(attn.self.query_proj, nn.Linear):
                       lora_query = LoRALayer(attn.self.query_proj, rank=rank, alpha=alpha)
                       attn.self.query_proj = lora_query
               
-              # Apply LoRA to key projection
+              # apply LoRA to key matrices
               if hasattr(attn, "self") and hasattr(attn.self, "key_proj"):
                   if isinstance(attn.self.key_proj, nn.Linear):
                       lora_key = LoRALayer(attn.self.key_proj, rank=rank, alpha=alpha)
                       attn.self.key_proj = lora_key
+              
+              # apply LoRA to value matrices
+              # if hasattr(attn, "self") and hasattr(attn.self, "value_proj"):
+              #     if isinstance(attn.self.value_proj, nn.Linear):
+              #         lora_val = LoRALayer(attn.self.value_proj, rank=rank, alpha=alpha)
+              #         attn.self.value_proj = lora_val
     else:
-      raise RuntimeError("Model type is not supported by this implementation of LoRA.")
+      raise RuntimeError(f"Model type {args.model_name} is not supported by this implementation of LoRA.")

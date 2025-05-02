@@ -10,6 +10,6 @@ Then, in your Python script, add
 ```
 from datasets import load_dataset
 
-target_task = "mnli" # MNLI task chosen as example
+target_task = "mrpc" # MRPC task chosen as example
 task_dataset = load_dataset("glue", target_task) 
 ```
