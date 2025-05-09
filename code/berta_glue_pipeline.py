@@ -1,5 +1,5 @@
 """
-This script runs a roberta-base OR deberta-base-xxl model with and without LoRA implementation on a single binary GLUE task.
+This script runs a roberta-base OR deberta-v2-xlarge model with and without LoRA implementation on a single binary GLUE task.
 
 Intended to be run on diff set of hyperparameters from LoRA paper (for experimentation in a shorter time with limited compute).
 """
